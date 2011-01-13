@@ -15,6 +15,7 @@
  */
 
 /* ScriptData
+<<<<<<< HEAD
 SDName: Wailing Caverns
 SD%Complete: 
 SDComment: 
@@ -437,4 +438,16 @@ void AddSC_wailing_caverns()
     newscript->pGossipHello =  &GossipHello_npc_disciple_of_naralex;
     newscript->pGossipSelect = &GossipSelect_npc_disciple_of_naralex;
     newscript->RegisterSelf();
+=======
+SDName: wailing_caverns
+SD%Complete: 0
+SDComment: Placeholder
+SDCategory: Wailing Caverns
+EndScriptData */
+
+#include "precompiled.h"
+
+void AddSC_wailing_caverns()
+{
+>>>>>>> ScriptDev2/master
 }
