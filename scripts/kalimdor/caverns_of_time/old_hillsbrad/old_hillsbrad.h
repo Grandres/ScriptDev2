@@ -38,6 +38,8 @@ class MANGOS_DLL_DECL instance_old_hillsbrad : public ScriptedInstance
 
         void Initialize();
 
+        Player* GetPlayerInMap();
+
         void OnCreatureCreate(Creature* pCreature);
         void OnCreatureDeath(Creature* pCreature);
 

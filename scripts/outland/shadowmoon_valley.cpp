@@ -117,16 +117,17 @@ struct MANGOS_DLL_DECL mob_mature_netherwing_drakeAI : public ScriptedAI
                 {
                     if (Player* pPlayer = m_creature->GetMap()->GetPlayer(uiPlayerGUID))
                     {
-                        if (GameObject* pGo = pPlayer->GetGameObject(SPELL_PLACE_CARCASS))
-                        {
+                        // GObject can't be found. temporar workaround (same working in practic)
+                        //if (GameObject* pGo = pPlayer->GetGameObject(SPELL_PLACE_CARCASS))
+                        //{
                             if (m_creature->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
                                 m_creature->GetMotionMaster()->MovementExpired();
 
                             m_creature->GetMotionMaster()->MoveIdle();
                             m_creature->StopMoving();
-
-                            m_creature->GetMotionMaster()->MovePoint(POINT_ID, pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ());
-                        }
+                            //m_creature->GetMotionMaster()->MovePoint(POINT_ID, pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ());
+                            m_creature->GetMotionMaster()->MovePoint(POINT_ID, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ());
+                            //}
                     }
                     bCanEat = false;
                 }
@@ -785,7 +786,7 @@ enum
     EVENT_COOLDOWN                    = 30000,
 
     SAY_TORLOTH_DIALOGUE1             = -1000532,
-    SAY_TORLOTH_DIALOGUE2             = -1000533,
+    SAY_TORLOTH_DIALOGUE2             = -1000533, 
     SAY_TORLOTH_DIALOGUE3             = -1000534,
     SAY_ILLIDAN_DIALOGUE              = -1000535,
     SAY_ILLIDAN_SUMMON1               = -1000536,
@@ -825,7 +826,7 @@ static TorlothCinematic TorlothAnim[]=
     {SAY_ILLIDAN_DIALOGUE, LORD_ILLIDAN, 7000},
     {SAY_TORLOTH_DIALOGUE2, TORLOTH, 3000},
     {0, TORLOTH, 2000},                                  // Torloth stand
-    {SAY_TORLOTH_DIALOGUE3, TORLOTH, 1000},
+    {SAY_TORLOTH_DIALOGUE3, TORLOTH, 1000}, 
     {0, TORLOTH, 3000},
     {0, TORLOTH, 0}
 };
@@ -862,7 +863,7 @@ struct WaveData
 {
     uint8  uiSpawnCount;
     uint8  uiUsedSpawnPoint;
-    uint32 uiCreatureId;
+    uint32 uiCreatureId; 
     uint32 uiSpawnTimer;
     uint32 uiYellTimer;
     int32  iTextId;
@@ -949,7 +950,7 @@ struct MANGOS_DLL_DECL mob_torlothAI : public ScriptedAI
         {
             case 0:
                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                break;
+                break; 
             case 3:
                 m_creature->SetStandState(UNIT_STAND_STATE_STAND);
                 break;
@@ -983,7 +984,7 @@ struct MANGOS_DLL_DECL mob_torlothAI : public ScriptedAI
         if (Player* pPlayer = pKiller->GetCharmerOrOwnerPlayerOrPlayerItself())
         {
             pPlayer->GroupEventHappens(QUEST_BATTLE_OF_THE_CRIMSON_WATCH, m_creature);
-
+        
             if (Creature* pLordIllidan = m_creature->GetMap()->GetCreature(m_uiLordIllidanGUID))
             {
                 DoScriptText(SAY_EVENT_COMPLETED, pLordIllidan, pPlayer);
@@ -1260,7 +1261,7 @@ struct MANGOS_DLL_DECL npc_lord_illidan_stormrageAI : public Scripted_NoMovement
             fLocZ = SpawnLocation[uiLocIndex + i].fLocZ;
             fOrient = SpawnLocation[uiLocIndex + i].fOrient;
 
-            if (Creature* pSpawn = m_creature->SummonCreature(WavesInfo[m_uiWaveCount].uiCreatureId, fLocX, fLocY, fLocZ, fOrient, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000))
+            if (Creature* pSpawn = m_creature->SummonCreature(WavesInfo[m_uiWaveCount].uiCreatureId, fLocX, fLocY, fLocZ, fOrient, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 300000))
             {
 
                 if (m_uiWaveCount)                          // only in first wave
@@ -1316,7 +1317,7 @@ struct MANGOS_DLL_DECL npc_lord_illidan_stormrageAI : public Scripted_NoMovement
         }
     }
 
-    void SummonedCreatureDespawn(Creature* pCreature)
+    void SummonedCreatureDespawn(Creature* pCreature) 
     {
         // decrement mob count
         --m_uiMobCount;
@@ -1440,6 +1441,183 @@ bool GOQuestAccept_GO_crystal_prison(Player* pPlayer, GameObject* pGo, Quest con
     return true;
 }
 
+/*######
+## Quest To Legion Hold (10596/10563)
+######*/
+
+enum
+{
+    QUEST_LEGIONHOLD_A  = 10563,
+    QUEST_LEGIONHOLD_H  = 10596,
+
+    NPC_DEATHBRINGER    = 21633,
+    NPC_IMAGE           = 21502,
+
+    AURA_BOX            = 37097,
+
+    // He should respawn after image gone!
+    GAMEOBJECT_INFERNAL = 184834,
+
+    //Texts
+    DEATHBRINGER1       = -1602043,
+    DEATHBRINGER2       = -1602044,
+    DEATHBRINGER3       = -1602045,
+    DEATHBRINGER4       = -1602046,
+
+    WARBRINGER1         = -1602047,
+    WARBRINGER2         = -1602048,
+    WARBRINGER3         = -1602049,
+    WARBRINGER4         = -1602050
+};
+
+struct MANGOS_DLL_DECL npc_razuunAI : public ScriptedAI
+{
+    npc_razuunAI(Creature* pCreature) : ScriptedAI(pCreature){Reset();}
+
+    uint8 m_uiPhase;
+    uint32 m_uiTextTimer;
+    uint64 m_uiPlayerGUID;
+    bool IsRunning;
+
+    void Reset()
+    {     
+        m_uiPhase = 0;
+        m_uiTextTimer = 4000;
+        m_uiPlayerGUID = 0;
+        IsRunning = false;
+        m_creature->SetVisibility(VISIBILITY_OFF);
+    }
+
+    void StartEvent(Player* pPlayer)
+    {
+        if(!IsRunning)
+        {
+            if(Creature* pDeathBringer = GetClosestCreatureWithEntry(m_creature, NPC_DEATHBRINGER, 100.0f))
+            {
+                if(pDeathBringer && pDeathBringer->isAlive())
+                {
+                    m_uiPlayerGUID = pPlayer->GetGUID();
+                    m_uiPhase = 1;
+                    IsRunning = true;
+
+                    if(m_creature->GetVisibility() == VISIBILITY_OFF)
+                        m_creature->SetVisibility(VISIBILITY_ON);
+                }
+            }
+        }
+    }
+    void UpdateAI(const uint32 uiDiff)
+    {
+        if(!IsRunning)
+        return;  
+            
+        if(m_uiTextTimer <= uiDiff)
+        {
+            Creature* pDeathBringer = GetClosestCreatureWithEntry(m_creature, NPC_DEATHBRINGER, 100.0f);
+            GameObject* pGo = GetClosestGameObjectWithEntry(m_creature, GAMEOBJECT_INFERNAL, 5.0f);
+
+            if(pGo)
+               pGo->Delete();
+
+            switch(m_uiPhase)
+            {
+                case 1:
+                    //Using NON_ATTACKABLE Flag - Crash-fix
+                    pDeathBringer->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    pDeathBringer->GetMotionMaster()->MovePoint(1, -3304.0f, 2930.0f, 170.923f);
+                    m_uiTextTimer = 6000;
+                    m_uiPhase++;
+                    break;
+                case 2:
+                    pDeathBringer->SetOrientation(5.60f);
+                    m_uiTextTimer = 1000;
+                    m_uiPhase++;
+                case 3:
+                    pDeathBringer->HandleEmote(16);
+                    m_uiTextTimer = 2000;
+                    m_uiPhase++;
+                case 4:
+                    DoScriptText(DEATHBRINGER1, pDeathBringer);
+                    m_uiTextTimer = 5000;
+                    m_uiPhase++;
+                    break;
+                case 5:
+                    DoScriptText(WARBRINGER1, m_creature);
+                    m_uiTextTimer = 5000;
+                    m_uiPhase++;
+                    break;
+                case 6:
+                    DoScriptText(DEATHBRINGER2, pDeathBringer);
+                    m_uiTextTimer = 5000;
+                    m_uiPhase++;
+                    break;
+                case 7:
+                    DoScriptText(WARBRINGER2, m_creature);
+                    m_uiTextTimer = 5000;
+                    m_uiPhase++;
+                    break;
+                case 8:
+                    DoScriptText(DEATHBRINGER3, pDeathBringer);
+                    m_uiTextTimer = 5000;
+                    m_uiPhase++;
+                    break;
+                case 9:
+                    DoScriptText(WARBRINGER3, m_creature);
+                    m_uiTextTimer = 5000;
+                    m_uiPhase++;
+                    break;
+                case 10:
+                    DoScriptText(DEATHBRINGER4, pDeathBringer);
+                    m_uiTextTimer = 5000;
+                    m_uiPhase++;
+                    break;
+                case 11:
+                    DoScriptText(WARBRINGER4, m_creature);
+                    m_uiTextTimer = 1000;
+                    m_uiPhase++;
+                    break;
+                case 12:
+                    if(m_uiPlayerGUID != 0)
+                        m_creature->GetMap()->GetPlayer(m_uiPlayerGUID)->KilledMonsterCredit(NPC_IMAGE);
+
+                    m_uiPhase = 0;
+                    IsRunning = false;
+
+                    if(m_creature->GetVisibility() == VISIBILITY_ON)
+                        m_creature->SetVisibility(VISIBILITY_OFF);
+
+                    pDeathBringer->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    break;
+                default:
+                    break;
+            }         
+        }
+        else m_uiTextTimer -= uiDiff;
+    }
+};
+
+CreatureAI* GetAI_npc_razuun(Creature* pCreature)
+{
+    return new npc_razuunAI(pCreature);
+}
+
+bool AreaTrigger_at_legionhold(Player* pPlayer, AreaTriggerEntry const* pAt)
+{
+    if(pPlayer->GetQuestStatus(QUEST_LEGIONHOLD_A) == QUEST_STATUS_INCOMPLETE || pPlayer->GetQuestStatus(QUEST_LEGIONHOLD_H) == QUEST_STATUS_INCOMPLETE)
+    {
+        if(pPlayer->HasAura(AURA_BOX) && pPlayer->GetTypeId() == TYPEID_PLAYER)
+        { 
+            if (Creature* pRazuun = GetClosestCreatureWithEntry(pPlayer, NPC_IMAGE, 100.0f))
+            {
+                if (npc_razuunAI* RazuunAI = dynamic_cast<npc_razuunAI*>(pRazuun->AI()))
+                    if(!RazuunAI->IsRunning)
+                        RazuunAI->StartEvent(pPlayer);
+            }
+        }
+    }
+    return true;
+}
+
 void AddSC_shadowmoon_valley()
 {
     Script *newscript;
@@ -1520,5 +1698,15 @@ void AddSC_shadowmoon_valley()
     newscript = new Script;
     newscript->Name = "go_crystal_prison";
     newscript->pQuestAcceptGO = &GOQuestAccept_GO_crystal_prison;
+    newscript->RegisterSelf();
+    
+    newscript = new Script;
+    newscript->Name = "npc_razuun";
+    newscript->GetAI = &GetAI_npc_razuun;
+    newscript->RegisterSelf();
+    
+    newscript = new Script;
+    newscript->Name = "at_legionhold";
+    newscript->pAreaTrigger = &AreaTrigger_at_legionhold;
     newscript->RegisterSelf();
 }

@@ -631,10 +631,6 @@
 					Name="blackwing_lair"
 					>
 					<File
-						RelativePath="..\scripts\eastern_kingdoms\blackwing_lair\blackwing_lair.h"
-						>
-					</File>
-					<File
 						RelativePath="..\scripts\eastern_kingdoms\blackwing_lair\boss_broodlord_lashlayer.cpp"
 						>
 					</File>
@@ -752,10 +748,6 @@
 					</File>
 					<File
 						RelativePath="..\scripts\eastern_kingdoms\karazhan\bosses_opera.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\scripts\eastern_kingdoms\karazhan\chess_event.cpp"
 						>
 					</File>
 					<File
@@ -983,10 +975,6 @@
 					Name="shadowfang_keep"
 					>
 					<File
-						RelativePath="..\scripts\eastern_kingdoms\shadowfang_keep\boss_hummel.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\scripts\eastern_kingdoms\shadowfang_keep\instance_shadowfang_keep.cpp"
 						>
 					</File>
@@ -1118,6 +1106,10 @@
 				<Filter
 					Name="uldaman"
 					>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\uldaman\boss_archaedas.cpp"
+						>
+					</File>
 					<File
 						RelativePath="..\scripts\eastern_kingdoms\uldaman\boss_archaedas.cpp"
 						>
@@ -1414,11 +1406,23 @@
 						Name="hyjal"
 						>
 						<File
+							RelativePath="..\scripts\kalimdor\caverns_of_time\hyjal\boss_anetheron.cpp"
+							>
+						</File>
+						<File
 							RelativePath="..\scripts\kalimdor\caverns_of_time\hyjal\boss_archimonde.cpp"
 							>
 						</File>
 						<File
 							RelativePath="..\scripts\kalimdor\caverns_of_time\hyjal\hyjal.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\kalimdor\caverns_of_time\hyjal\boss_azgalor.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\kalimdor\caverns_of_time\hyjal\boss_kazrogal.cpp"
 							>
 						</File>
 						<File
@@ -1643,6 +1647,14 @@
 					Name="wailing_caverns"
 					>
 					<File
+						RelativePath="..\scripts\kalimdor\wailing_caverns\wailing_caverns.h"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\kalimdor\wailing_caverns\wailing_caverns.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\scripts\kalimdor\wailing_caverns\instance_wailing_caverns.cpp"
 						>
 					</File>
@@ -1719,6 +1731,10 @@
 						>
 						<File
 							RelativePath="..\scripts\northrend\azjol-nerub\ahnkahet\ahnkahet.h"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\azjol-nerub\ahnkahet\boss_amanitar.cpp"
 							>
 						</File>
 						<File
@@ -1830,6 +1846,10 @@
 				<Filter
 					Name="draktharon_keep"
 					>
+					<File
+						RelativePath="..\scripts\northrend\draktharon_keep\boss_dred.cpp"
+						>
+					</File>
 					<File
 						RelativePath="..\scripts\northrend\draktharon_keep\boss_novos.cpp"
 						>
@@ -1963,6 +1983,14 @@
 						>
 						<File
 							RelativePath="..\scripts\northrend\nexus\eye_of_eternity\boss_malygos.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\nexus\eye_of_eternity\eye_of_eternity.h"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\nexus\eye_of_eternity\instance_eye_of_eternity.cpp"
 							>
 						</File>
 					</Filter>
@@ -2262,6 +2290,38 @@
 				<Filter
 					Name="violet_hold"
 					>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_cyanigosa.cpp"
+						>
+					</File>
+					<File
+ 						RelativePath="..\scripts\northrend\violet_hold\boss_erekem.cpp"
+ 						>
+ 					</File>
+ 					<File
+ 						RelativePath="..\scripts\northrend\violet_hold\boss_ichoron.cpp"
+ 						>
+ 					</File>
+ 					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_lavanthor.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_moragg.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_xevozz.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_zuramat.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\def_violet_hold.h"
+						>
+					</File>
 					<File
 						RelativePath="..\scripts\northrend\violet_hold\boss_erekem.cpp"
 						>
@@ -2679,10 +2739,22 @@
 						Name="underbog"
 						>
 						<File
-							RelativePath="..\scripts\outland\coilfang_reservoir\underbog\boss_hungarfen.cpp"
+							RelativePath="..\scripts\outland\coilfang_reservoir\underbog\boss_black_stalker.cpp"
 							>
 						</File>
-					</Filter>
+						<File
+ 							RelativePath="..\scripts\outland\coilfang_reservoir\underbog\boss_hungarfen.cpp"
+ 							>
+ 						</File>
+						<File
+							RelativePath="..\scripts\outland\coilfang_reservoir\underbog\def_underbog.h"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\outland\coilfang_reservoir\underbog\instance_underbog.cpp"
+							>
+						</File>
+ 					</Filter>
 				</Filter>
 				<Filter
 					Name="gruuls_lair"
@@ -2839,6 +2911,10 @@
 						Name="the_eye"
 						>
 						<File
+							RelativePath="..\scripts\outland\tempest_keep\the_eye\boss_alar.cpp"
+							>
+						</File>
+						<File
 							RelativePath="..\scripts\outland\tempest_keep\the_eye\boss_astromancer.cpp"
 							>
 						</File>
@@ -2866,6 +2942,10 @@
 					<Filter
 						Name="the_mechanar"
 						>
+						<File
+							RelativePath="..\scripts\outland\tempest_keep\the_mechanar\boss_gatewatcher_gyrokill.cpp"
+							>
+						</File>
 						<File
 							RelativePath="..\scripts\outland\tempest_keep\the_mechanar\boss_gatewatcher_ironhand.cpp"
 							>
@@ -2930,6 +3010,10 @@
 				</File>
 				<File
 					RelativePath="..\scripts\world\npc_professions.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\scripts\world\npc_small_pet_handler.cpp"
 					>
 				</File>
 				<File

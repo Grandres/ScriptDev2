@@ -956,6 +956,32 @@ CreatureAI* GetAI_npc_zeppit(Creature* pCreature)
     return new npc_zeppitAI(pCreature);
 }
 
+/*######
+## go_Ethereal_Power_Pad
+######*/
+enum
+{
+	QUEST_NOT_SO_MODEST_PROPOSAL    = 10270,
+	ITEM_TELEPORTER_POWER_PACK      = 28969,
+	NPC_IMAGE_OF_WIND_TRADER_MARID  = 20518
+
+};
+bool GOUse_go_Ethereal_Teleport_pad(Player* pPlayer, GameObject* pGo)
+{
+	Creature* pMarid = GetClosestCreatureWithEntry(pPlayer, NPC_IMAGE_OF_WIND_TRADER_MARID, 30.0f);
+
+    if (pMarid)
+        return true;
+
+	if ((pPlayer->GetQuestRewardStatus(QUEST_NOT_SO_MODEST_PROPOSAL) == QUEST_STATUS_COMPLETE)|| pPlayer->GetQuestStatus(QUEST_NOT_SO_MODEST_PROPOSAL) == QUEST_STATUS_COMPLETE )
+	{
+		pPlayer->SummonCreature(NPC_IMAGE_OF_WIND_TRADER_MARID, 4007.11f, 1517.15f, -116.363f, -0.453786f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000);
+
+	}
+	return true;
+
+}
+
 void AddSC_netherstorm()
 {
     Script* pNewScript;
@@ -1007,5 +1033,10 @@ void AddSC_netherstorm()
     pNewScript = new Script;
     pNewScript->Name = "npc_zeppit";
     pNewScript->GetAI = &GetAI_npc_zeppit;
+    pNewScript->RegisterSelf();
+    
+    pNewScript = new Script;
+    pNewScript->Name = "go_Ethereal_Teleport_pad";
+    pNewScript->pGOUse = &GOUse_go_Ethereal_Teleport_pad;
     pNewScript->RegisterSelf();
 }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software licensed under GPL version 2
  * Please see the included DOCS/LICENSE.TXT for more information */
 
@@ -21,7 +21,9 @@ enum
     DATA_CAPERNIAN              = 10,
     DATA_SANGUINAR              = 11,
     DATA_TELONICUS              = 12,
-    DATA_THALADRED              = 13
+    DATA_THALADRED              = 13,
+    DATA_ALAREVENT              = 14,
+    DATA_ALAR                   = 15
 };
 
 #endif

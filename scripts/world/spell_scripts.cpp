@@ -223,6 +223,15 @@ enum
 
     NPC_SENTRY_BOT                      = 25753,
     SPELL_SUMMON_SENTRY_BOT             = 46068,
+    
+    SPELL_GAVROK_RUNEBREAKER            = 47604,
+    NPC_FREED_GIANT                     = 26783,
+    NPC_WEAKENED_GIANT                  = 26872,
+    SAY_GIANT_FREED_0                   = -1999773,
+    SAY_GIANT_FREED_1                   = -1999772,
+    SAY_GIANT_FREED_2                   = -1999771,
+    SAY_GIANT_FREED_3                   = -1999770,
+    EMOTE_ZAPPING_FAILED                = -1999769,
 
     // target woodlands walker
     SPELL_STRENGTH_ANCIENTS             = 47575,
@@ -243,6 +252,12 @@ enum
     NPC_FREED_GREENGILL_SLAVE           = 25085,
     NPC_DARKSPINE_MYRMIDON              = 25060,
     NPC_DARKSPINE_SIREN                 = 25073,
+    
+    // Quest "War Is Hell" 11270
+    NPC_FALLEN_COMBATANT_1              = 24009,
+    NPC_FALLEN_COMBATANT_2              = 24010,
+    SPELL_FALLEN_COMBATAN_CREDIT        = 43297,
+    SPELL_BURN_BODY                     = 42793,
 
     // quest 14107
     SPELL_BLESSING_OF_PEACE             = 66719,
@@ -374,7 +389,7 @@ bool EffectAuraDummy_spell_aura_dummy_npc(const Aura* pAura, bool bApply)
         {
             if (pAura->GetEffIndex() != EFFECT_INDEX_0)
                 return true;
-
+            
             if (Unit* pCaster = pAura->GetCaster())
                 DoScriptText(SAY_SPECIMEN, pCaster);
 
@@ -692,6 +707,35 @@ bool EffectDummyCreature_spell_dummy_npc(Unit* pCaster, uint32 uiSpellId, SpellE
             }
             return true;
         }
+        case SPELL_GAVROK_RUNEBREAKER:
+        {
+            if (uiEffIndex == EFFECT_INDEX_0 && pCaster->GetTypeId() == TYPEID_PLAYER)
+            {
+                if (urand(0, 4) > 3)
+                {
+                    pCreatureTarget->UpdateEntry(NPC_FREED_GIANT);
+                    pCreatureTarget->RemoveAllAuras();
+                    pCreatureTarget->DeleteThreatList();
+                    pCreatureTarget->CombatStop(true);
+                    switch(urand(0, 3))
+                    {
+                        case 0: DoScriptText(SAY_GIANT_FREED_0, pCreatureTarget); break;
+                        case 1: DoScriptText(SAY_GIANT_FREED_1, pCreatureTarget); break;
+                        case 2: DoScriptText(SAY_GIANT_FREED_2, pCreatureTarget); break;
+                        case 3: DoScriptText(SAY_GIANT_FREED_3, pCreatureTarget); break;
+                    }
+                    ((Player*)pCaster)->KilledMonsterCredit(NPC_FREED_GIANT, pCreatureTarget->GetGUID());
+                    pCreatureTarget->ForcedDespawn(30000);
+                }
+                else
+                {
+                    pCreatureTarget->UpdateEntry(NPC_WEAKENED_GIANT);
+                    DoScriptText(EMOTE_ZAPPING_FAILED, pCreatureTarget);
+                    pCreatureTarget->AI()->AttackStart(pCaster);
+                }
+            }
+            return true;
+        }
         case SPELL_ORB_OF_MURLOC_CONTROL:
         {
             pCreatureTarget->CastSpell(pCaster, SPELL_GREENGILL_SLAVE_FREED, true);
@@ -701,6 +745,12 @@ bool EffectDummyCreature_spell_dummy_npc(Unit* pCaster, uint32 uiSpellId, SpellE
 
             pCreatureTarget->CastSpell(pCreatureTarget, SPELL_ENRAGE, true);
 
+            return true;
+        }
+        case SPELL_BURN_BODY:
+        {
+            if (pCreatureTarget->GetEntry() == NPC_FALLEN_COMBATANT_1 || pCreatureTarget->GetEntry() == NPC_FALLEN_COMBATANT_2)
+                pCreatureTarget->CastSpell(pCaster, SPELL_FALLEN_COMBATAN_CREDIT, true);
             return true;
         }
         case SPELL_FUMPING:
