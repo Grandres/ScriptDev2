@@ -57,6 +57,21 @@ void ScriptedInstance::DoUpdateWorldState(uint32 uiStateId, uint32 uiStateData)
         debug_log("SD2: DoUpdateWorldState attempt send data but no players in map.");
 }
 
+Player* ScriptedInstance::GetPlayerInMap(bool bOnlyAlive /*=false*/, bool bCanBeGamemaster /*=true*/)
+{
+    Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+    for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+    {
+        Player* pPlayer = itr->getSource();
+        if (pPlayer && (!bOnlyAlive || pPlayer->isAlive()) && (bCanBeGamemaster || !pPlayer->isGameMaster()))
+            return pPlayer;
+    }
+
+    return NULL;
+}
+
+
 void ScriptedInstance::DestroyItemFromAllPlayers(uint32 uiItemId)
 {
 	 Map::PlayerList const& lPlayers = instance->GetPlayers();
