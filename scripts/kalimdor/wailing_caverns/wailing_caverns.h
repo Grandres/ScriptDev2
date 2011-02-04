@@ -17,8 +17,8 @@ enum
 
     DATA_NARALEX   = 6,
 
-    NPC_NARLEX     = 3679
-    SAY_INTRO       = -1043000,                             // Say when the first 4 encounter are DONE
+    NPC_NARLEX     = 3679,
+    SAY_INTRO      = -1043000,                             // Say when the first 4 encounter are DONE
 };
 
 class MANGOS_DLL_DECL instance_wailing_caverns : public ScriptedInstance

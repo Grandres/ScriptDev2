@@ -62,7 +62,7 @@ void instance_wailing_caverns::SetData(uint32 uiType, uint32 uiData)
         case TYPE_DISCIPLE:
             m_auiEncounter[4] = uiData;
             break;
-        case TYPE_MUTANOUS:
+        case TYPE_MUTANUS:
             m_auiEncounter[5] = uiData;
             break;
     }
@@ -117,7 +117,7 @@ uint32 instance_wailing_caverns::GetData(uint32 uiType)
         case TYPE_PYTHAS:    return m_auiEncounter[2]; break;
         case TYPE_SERPENTIS: return m_auiEncounter[3]; break;
         case TYPE_DISCIPLE:  return m_auiEncounter[4]; break;
-        case TYPE_MUTANOUS:  return m_auiEncounter[5]; break;
+        case TYPE_MUTANUS:  return m_auiEncounter[5]; break;
     }
     return 0;
 }

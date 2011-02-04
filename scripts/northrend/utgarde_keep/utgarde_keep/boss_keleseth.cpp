@@ -46,7 +46,6 @@ enum
     SPELL_DECREPIFY_H       = 59397,
     SPELL_BONE_ARMOR        = 59386,                        // casted on boss, heroic only
 
-    NPC_FROST_TOMB          = 23965,
     NPC_VRYKUL_SKELETON     = 23970
 };
 

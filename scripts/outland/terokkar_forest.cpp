@@ -1307,11 +1307,11 @@ void AddSC_terokkar_forest()
     pNewScript->GetAI = &GetAI_npc_hungry_nether_ray;
     pNewScript->RegisterSelf();
     
-    newscript = new Script;
-    newscript->Name = "npc_skywing";
-    newscript->GetAI = &GetAI_npc_skywing;
-    newscript->pQuestAcceptNPC = &QuestAccept_npc_skywing;
-    newscript->RegisterSelf();
+    pNewScript = new Script;
+    pNewScript->Name = "npc_skywing";
+    pNewScript->GetAI = &GetAI_npc_skywing;
+    pNewScript->pQuestAcceptNPC = &QuestAccept_npc_skywing;
+    pNewScript->RegisterSelf();
 
     pNewScript = new Script;
     pNewScript->Name = "npc_letoll";
