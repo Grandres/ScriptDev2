@@ -324,8 +324,6 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         DoScriptText(SAY_SARTHARION_AGGRO,m_creature);
         DoCastSpellIfCan(m_creature, SPELL_PYROBUFFET_RANGE, CAST_TRIGGERED);
 
-        m_creature->SetInCombatWithZone();
-
         if (m_pInstance)
         {
             // trash mobs in the area should help Sartharion in the fight

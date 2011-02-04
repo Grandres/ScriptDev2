@@ -987,11 +987,6 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
             m_pInstance->SetData(TYPE_ILLIDAN, NOT_STARTED);
     }
 
-    void Aggro(Unit* pWho)
-    {
-        m_creature->SetInCombatWithZone();
-    }
-
     void AttackStart(Unit *who)
     {
         if (!who || IsTalking || Phase == 2 || Phase == 4 || Phase == 6 || m_creature->HasAura(SPELL_KNEEL, EFFECT_INDEX_0))
@@ -2291,7 +2286,7 @@ struct MANGOS_DLL_DECL mob_parasitic_shadowfiendAI : public ScriptedAI
     void DoMeleeAttackIfReady()
     {
         //If we are within range melee the target
-        if (m_creature->IsWithinDistInMap(m_creature->getVictim(), ATTACK_DISTANCE))
+        if (m_creature->CanReachWithMeleeAttack(m_creature->getVictim()))
         {
             //Make sure our attack is ready and we aren't currently casting
             if (m_creature->isAttackReady() && !m_creature->IsNonMeleeSpellCasted(false))

@@ -264,6 +264,9 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, m_creature);
+
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_KELESETH, IN_PROGRESS);
     }
 
     void DespawnAdds()
@@ -298,6 +301,15 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, m_creature);
+
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_KELESETH, DONE);
+    }
+
+    void JustReachedHome()
+    {
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_KELESETH, FAIL);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -365,15 +377,15 @@ CreatureAI* GetAI_boss_keleseth(Creature* pCreature)
 
 void AddSC_boss_keleseth()
 {
-    Script* newscript;
+    Script* pNewScript;
 
-    newscript = new Script;
-    newscript->Name = "boss_keleseth";
-    newscript->GetAI = &GetAI_boss_keleseth;
-    newscript->RegisterSelf();
+    pNewScript = new Script;
+    pNewScript->Name = "boss_keleseth";
+    pNewScript->GetAI = &GetAI_boss_keleseth;
+    pNewScript->RegisterSelf();
 
-    newscript = new Script;
-    newscript->Name = "mob_vrykul_skeleton";
-    newscript->GetAI = &GetAI_mob_vrykul_skeleton;
-    newscript->RegisterSelf();
+    pNewScript = new Script;
+    pNewScript->Name = "mob_vrykul_skeleton";
+    pNewScript->GetAI = &GetAI_mob_vrykul_skeleton;
+    pNewScript->RegisterSelf();
 }

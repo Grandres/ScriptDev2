@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -62,6 +62,15 @@ enum
     GOING_SKELETAL                  = 3
 };
 
+enum Phases
+{
+    PHASE_SKELETAL                  = 0,
+    PHASE_TAKE_FLESH                = 1,
+    PHASE_FLESH                     = 2,
+    PHASE_RETURN_FLESH              = 3,
+    PHASE_SKELETAL_END              = 4,
+};
+
 /*######
 ## boss_tharonja
 ######*/
@@ -87,6 +96,16 @@ struct MANGOS_DLL_DECL boss_tharonjaAI : public ScriptedAI
     uint32 uiLightningBreathTimer;
     uint32 uiPoisonCloudTimer;
     uint8 Phase;
+
+    Phases m_uiPhase;
+
+    uint32 m_uiCurseLifeTimer;
+    uint32 m_uiRainFireTimer;
+    uint32 m_uiShadowVolleyTimer;
+    uint32 m_uiLightningBreathTimer;
+    uint32 m_uiEyeBeamTimer;
+    uint32 m_uiPoisonCloudTimer;
+    uint32 m_uiReturnFleshTimer;
 
     void Reset()
     {
@@ -236,6 +255,12 @@ struct MANGOS_DLL_DECL boss_tharonjaAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, m_creature);
+
+        DoCastSpellIfCan(m_creature, SPELL_ACHIEVEMENT_CHECK, CAST_TRIGGERED | CAST_FORCE_CAST);
+
+        // TODO check if this spell casting is infact also needed on phase-switch or only here (possible that there is also some sort of hp% dependency
+        if (m_uiPhase == PHASE_FLESH)
+            DoCastSpellIfCan(m_creature, SPELL_CLEAR_GIFT_OF_THARONJA, CAST_TRIGGERED | CAST_FORCE_CAST);
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_THARONJA, DONE);

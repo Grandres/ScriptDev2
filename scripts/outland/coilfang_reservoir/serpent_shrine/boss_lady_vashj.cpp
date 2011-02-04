@@ -388,7 +388,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                     Unit* pTarget = m_creature->GetMap()->GetUnit((*itr)->getUnitGuid());
 
                     //if in melee range
-                    if (pTarget && pTarget->IsWithinDistInMap(m_creature, ATTACK_DISTANCE))
+                    if (pTarget && m_creature->CanReachWithMeleeAttack(pTarget))
                     {
                         bInMeleeRange = true;
                         break;
@@ -519,7 +519,7 @@ struct MANGOS_DLL_DECL mob_enchanted_elementalAI : public ScriptedAI
         {
             if (Creature* pVashj = m_creature->GetMap()->GetCreature(m_pInstance->GetData64(DATA_LADYVASHJ)))
             {
-                if (pVashj->IsWithinDistInMap(m_creature, ATTACK_DISTANCE))
+                if (pVashj->IsWithinDistInMap(m_creature, INTERACTION_DISTANCE))
                 {
                     //increase lady vashj damage
                     if (pVashj->isAlive() && pVashj->isInCombat())

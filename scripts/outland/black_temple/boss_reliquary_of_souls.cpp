@@ -828,7 +828,6 @@ struct MANGOS_DLL_DECL boss_essence_of_angerAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        m_creature->SetInCombatWithZone();
         DoCastSpellIfCan(m_creature->getVictim(), AURA_OF_ANGER, CAST_TRIGGERED);
     }
 
