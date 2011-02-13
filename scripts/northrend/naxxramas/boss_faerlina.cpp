@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -143,6 +143,15 @@ struct MANGOS_DLL_DECL boss_faerlinaAI : public ScriptedAI
                 if (pAdd && !pAdd->isAlive())
                     pAdd->Respawn();
             }
+
+            // Achievement 'Momma said Knock you out': If we removed OR delayed the frenzy, the criteria is failed
+            if ((bIsFrenzyRemove || m_uiEnrageTimer < 30000) && m_pInstance)
+                m_pInstance->SetSpecialAchievementCriteria(TYPE_ACHIEV_KNOCK_YOU_OUT, false);
+
+            // In any case we prevent Frenzy and Poison Bolt Volley for Widow's Embrace Duration (30s)
+            // We do this be setting the timers to at least bigger than 30s
+            m_uiEnrageTimer = std::max(m_uiEnrageTimer, (uint32)30000);
+            m_uiPoisonBoltVolleyTimer = std::max(m_uiPoisonBoltVolleyTimer, urand(33000, 38000));
         }
     }
 
