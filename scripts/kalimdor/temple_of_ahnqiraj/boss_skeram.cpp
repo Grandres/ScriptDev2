@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+/* Copyright (C) 2006 - 2011 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -107,19 +107,34 @@ struct MANGOS_DLL_DECL boss_skeramAI : public ScriptedAI
     void JustDied(Unit* Killer)
     {
         if (!IsImage)
+        {
             DoScriptText(SAY_DEATH, m_creature);
+
+            if (m_pInstance)
+                m_pInstance->SetData(TYPE_SKERAM, DONE);
+        }
     }
 
     void Aggro(Unit *who)
     {
         if (IsImage || Images75)
             return;
+
         switch(urand(0, 2))
         {
             case 0: DoScriptText(SAY_AGGRO1, m_creature); break;
             case 1: DoScriptText(SAY_AGGRO2, m_creature); break;
             case 2: DoScriptText(SAY_AGGRO3, m_creature); break;
         }
+
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_SKERAM, IN_PROGRESS);
+    }
+
+    void JustReachedHome()
+    {
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_SKERAM, FAIL);
     }
 
     void UpdateAI(const uint32 diff)
@@ -238,24 +253,6 @@ struct MANGOS_DLL_DECL boss_skeramAI : public ScriptedAI
                 break;
         }
 
-        for (int tryi = 0; tryi < 41; ++tryi)
-        {
-            Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0);
-            if (pTarget && pTarget->GetTypeId() == TYPEID_PLAYER)
-            {
-                Group *grp = ((Player *)pTarget)->GetGroup();
-                if (grp)
-                {
-                    for (int ici = 0; ici < TARGET_ICON_COUNT; ++ici)
-                    {
-                        //if (grp ->m_targetIcons[ici] == m_creature->GetGUID()) -- private member:(
-                        //grp->SetTargetIcon(ici, 0);
-                    }
-                }
-                break;
-            }
-        }
-
         m_creature->RemoveAllAuras();
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         m_creature->SetVisibility(VISIBILITY_OFF);
@@ -281,11 +278,11 @@ struct MANGOS_DLL_DECL boss_skeramAI : public ScriptedAI
             Image1->SetMaxHealth(m_creature->GetMaxHealth() / 5);
             Image1->SetHealth(m_creature->GetHealth() / 5);
 
-            if (target)
-                Image1->AI()->AttackStart(target);
-
             if (boss_skeramAI* pImageAI = dynamic_cast<boss_skeramAI*>(Image1->AI()))
                 pImageAI->IsImage = true;
+
+            if (target)
+                Image1->AI()->AttackStart(target);
         }
 
         Image2 = m_creature->SummonCreature(15263,i2->x, i2->y, i2->z, i2->r, TEMPSUMMON_CORPSE_DESPAWN, 30000);
@@ -294,11 +291,11 @@ struct MANGOS_DLL_DECL boss_skeramAI : public ScriptedAI
             Image2->SetMaxHealth(m_creature->GetMaxHealth() / 5);
             Image2->SetHealth(m_creature->GetHealth() / 5);
 
-            if (target)
-                Image2->AI()->AttackStart(target);
-
             if (boss_skeramAI* pImageAI = dynamic_cast<boss_skeramAI*>(Image2->AI()))
                 pImageAI->IsImage = true;
+
+            if (target)
+                Image2->AI()->AttackStart(target);
         }
 
 

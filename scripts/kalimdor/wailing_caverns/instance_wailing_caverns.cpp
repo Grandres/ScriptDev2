@@ -17,7 +17,7 @@
 /* ScriptData
 SDName: Instance_Wailing_Caverns
 SD%Complete: 90
-SDComment: 
+SDComment:
 SDCategory: Wailing Caverns
 EndScriptData */
 
@@ -39,7 +39,8 @@ void instance_wailing_caverns::OnCreatureCreate(Creature* pCreature)
 {
     switch (pCreature->GetEntry())
     {
-        case NPC_NARLEX: m_uiNaralexGUID = pCreature->GetGUID(); break;
+        case NPC_NARALEX:  m_uiNaralexGUID = pCreature->GetGUID();  break;
+        case NPC_DISCIPLE: m_uiDiscipleGUID = pCreature->GetGUID(); break;
     }
 }
 
@@ -67,8 +68,18 @@ void instance_wailing_caverns::SetData(uint32 uiType, uint32 uiData)
             break;
     }
 
-    if (m_auiEncounter[0] == DONE && m_auiEncounter[1] == DONE && m_auiEncounter[2] == DONE && m_auiEncounter[3] == DONE && m_auiEncounter[4] == NOT_STARTED)
+    // Set to special in order to start the escort event; only if all four bosses are done
+    if (m_auiEncounter[0] == DONE && m_auiEncounter[1] == DONE && m_auiEncounter[2] == DONE && m_auiEncounter[3] == DONE && (m_auiEncounter[4] == NOT_STARTED || m_auiEncounter[4] == FAIL))
+    {
+        // Yell intro text; only the first time
+        if (m_auiEncounter[4] == NOT_STARTED)
+        {
+            if (Creature* pDisciple = instance->GetCreature(m_uiDiscipleGUID))
+                DoScriptText(SAY_INTRO, pDisciple);
+        }
+
         m_auiEncounter[4] = SPECIAL;
+    }
 
     if (uiData == DONE)
     {
@@ -117,7 +128,7 @@ uint32 instance_wailing_caverns::GetData(uint32 uiType)
         case TYPE_PYTHAS:    return m_auiEncounter[2]; break;
         case TYPE_SERPENTIS: return m_auiEncounter[3]; break;
         case TYPE_DISCIPLE:  return m_auiEncounter[4]; break;
-        case TYPE_MUTANUS:  return m_auiEncounter[5]; break;
+        case TYPE_MUTANUS:   return m_auiEncounter[5]; break;
     }
     return 0;
 }
@@ -126,7 +137,7 @@ uint64 instance_wailing_caverns::GetData64(uint32 uiData)
 {
     switch (uiData)
     {
-        case DATA_NARALEX: return m_uiNaralexGUID;
+        case NPC_NARALEX: return m_uiNaralexGUID;
     }
     return 0;
 }
